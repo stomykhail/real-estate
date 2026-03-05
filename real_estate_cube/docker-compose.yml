@@ -1,0 +1,21 @@
+services:
+  cube:
+    image: cubejs/cube:latest
+    ports:
+      - 4000:4000
+      - 3000:3000
+    environment:
+      - CUBEJS_DEV_MODE=true
+      # Database connection settings
+      - CUBEJS_DB_TYPE=postgres
+      # MAC TRICK: host.docker.internal tells Docker to look at your Mac's local Postgres!
+      - CUBEJS_DB_HOST=host.docker.internal
+      - CUBEJS_DB_PORT=5432
+      - CUBEJS_DB_NAME=real_estate_project 
+      - CUBEJS_DB_USER=postgres    
+      - CUBEJS_DB_PASS=Miki0420         
+      # Cube security and API settings
+      - CUBEJS_API_SECRET=my_super_secret_key_for_this_project
+    volumes:
+      # This forces Docker to look at your exact Mac folder
+      - /Users/misha/Documents/pets/real_estate/real_estate_cube:/cube/conf

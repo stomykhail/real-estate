@@ -1,0 +1,13 @@
+cubes:
+  - name: dim_town
+    sql_table: public.dim_town
+    
+    dimensions:
+      - name: town_id
+        sql: town_id
+        type: number
+        primary_key: true
+        
+      - name: town_name
+        sql: town_name
+        type: string

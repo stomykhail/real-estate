@@ -1,0 +1,32 @@
+cubes:
+  - name: fact_unemployment_rate
+    sql_table: public.fact_unemployment_rate
+    
+    joins:
+      - name: dim_date
+        sql: "{CUBE}.date_recorded_id = {dim_date.date_recorded_id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: date_recorded_id
+        sql: date_recorded_id
+        type: number
+        primary_key: true
+
+      - name: unemployed_count
+        sql: rate # This is the raw '98300' value from your CSV
+        type: number
+
+    measures:
+      - name: average_unemployed_count
+        title: "Total Unemployed (Headcount)"
+        sql: rate
+        type: avg
+
+      # THE CALCULATION: Engineering the actual percentage rate
+      - name: unemployment_rate_percentage
+        title: "Unemployment Rate (%)"
+        # Calculation: (Unemployed / 1.9M Labor Force) * 100
+        sql: "({average_unemployed_count} / 1900000.0) * 100"
+        type: number
+        format: percent

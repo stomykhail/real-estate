@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # 1. The Database Container
+  postgres_db:
+    image: postgres:latest
+    container_name: real_estate_dw
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword  # A standard dummy password for local Docker
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # This mounts a local 'sql' folder into the container to auto-run on startup
+      - ./sql:/docker-entrypoint-initdb.d 
+
+  # 2. The Semantic Layer (Cube) Container
+  cube:
+    image: cubejs/cube:latest
+    container_name: real_estate_cube_api
+    depends_on:
+      - postgres_db  # Docker will wait for Postgres to start before launching Cube
+    ports:
+      - "4000:4000"
+      - "3000:3000"
+    environment:
+      - CUBEJS_DEV_MODE=true
+      - CUBEJS_DB_TYPE=postgres
+      # Cube now connects directly to the container name instead of 'localhost'
+      - CUBEJS_DB_HOST=postgres_db 
+      - CUBEJS_DB_PORT=5432
+      - CUBEJS_DB_NAME=postgres
+      - CUBEJS_DB_USER=postgres
+      - CUBEJS_DB_PASS=mysecretpassword
+      - CUBEJS_API_SECRET=my_super_secret_key
+    volumes:
+      - ./real_estate_cube:/cube/conf
+
+volumes:
+  pgdata:

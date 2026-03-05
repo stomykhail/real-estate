@@ -1,0 +1,39 @@
+cubes:
+  - name: dim_date
+    sql_table: public.dim_date
+    
+    # THE FIX: The joins live here now, pointing DOWN to the facts
+    joins:
+      - name: fact_real_estate_transaction
+        sql: "{CUBE}.date_recorded_id = {fact_real_estate_transaction.date_recorded_id}"
+        relationship: one_to_many
+
+      - name: fact_unemployment_rate
+        sql: "{CUBE}.date_recorded_id = {fact_unemployment_rate.date_recorded_id}"
+        relationship: one_to_many
+    
+    dimensions:
+      - name: date_recorded_id
+        sql: date_recorded_id
+        type: number
+        primary_key: true
+        
+      - name: full_date
+        sql: full_date
+        type: time
+        
+      - name: day
+        sql: day
+        type: number
+        
+      - name: month
+        sql: month
+        type: number
+        
+      - name: quarter
+        sql: quarter
+        type: number
+        
+      - name: year
+        sql: year
+        type: number

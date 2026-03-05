@@ -1,0 +1,68 @@
+cubes:
+  - name: fact_real_estate_transaction
+    sql_table: public.fact_real_estate_transaction
+    data_source: default
+
+    joins:
+      - name: dim_property_type
+        sql: "{CUBE}.property_type_id = {dim_property_type.property_type_id}"
+        relationship: many_to_one
+      - name: dim_address
+        sql: "{CUBE}.address_id = {dim_address.address_id}"
+        relationship: many_to_one
+
+    dimensions:
+      # THE FIX: I accidentally removed this! It is required for the join to work.
+      - name: date_recorded_id
+        sql: date_recorded_id
+        type: number
+
+      - name: transaction_id
+        sql: transaction_id
+        type: number
+        primary_key: true
+
+      - name: serial_number
+        sql: serial_number
+        type: number
+
+      - name: assessed_value
+        sql: assessed_value
+        type: number
+
+      - name: sales_amount
+        sql: sales_amount
+        type: number
+
+      - name: sales_ratio
+        sql: sales_ratio
+        type: number
+
+      - name: market_value_category
+        type: string
+        sql: >
+          CASE 
+            WHEN sales_ratio < 0.8 THEN 'Undervalued'
+            WHEN sales_ratio BETWEEN 0.8 AND 1.2 THEN 'Market Value'
+            ELSE 'Overvalued'
+          END
+
+    measures:
+      - name: total_transactions
+        type: count
+
+      - name: total_sales_volume
+        sql: sales_amount
+        type: sum
+
+      - name: average_sale_price
+        sql: sales_amount
+        type: avg
+
+      - name: total_assessed_value
+        sql: assessed_value
+        type: sum
+
+      - name: average_assessed_value
+        sql: assessed_value
+        type: avg

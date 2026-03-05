@@ -1,0 +1,23 @@
+cubes:
+  - name: fact_household_debt
+    sql_table: public.fact_household_debt
+    
+    joins:
+      - name: dim_date
+        sql: "{CUBE}.date_recorded_id = {dim_date}.date_recorded_id"
+        relationship: many_to_one
+
+    dimensions:
+      - name: debt_id
+        sql: debt_id
+        type: number
+        primary_key: true
+
+    measures:
+      - name: average_lower_bound
+        sql: lower_bound
+        type: avg
+        
+      - name: average_upper_bound
+        sql: upper_bound
+        type: avg

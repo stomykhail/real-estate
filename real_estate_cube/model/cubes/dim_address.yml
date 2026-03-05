@@ -1,0 +1,26 @@
+cubes:
+  - name: dim_address
+    sql_table: public.dim_address
+    
+    joins:
+      - name: dim_town
+        sql: "{CUBE}.town_id = {dim_town}.town_id"
+        relationship: many_to_one
+
+    dimensions:
+      - name: address_id
+        sql: address_id
+        type: number
+        primary_key: true
+        
+      - name: address
+        sql: address
+        type: string
+        
+      - name: latitude
+        sql: latitude
+        type: number
+        
+      - name: longitude
+        sql: longitude
+        type: number

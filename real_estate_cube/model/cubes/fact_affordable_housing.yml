@@ -1,0 +1,43 @@
+cubes:
+  - name: fact_affordable_housing
+    sql_table: public.fact_affordable_housing
+    
+    joins:
+      - name: dim_town
+        sql: "{CUBE}.town_id = {dim_town}.town_id"
+        relationship: many_to_one
+      - name: dim_date
+        sql: "{CUBE}.date_recorded_id = {dim_date}.date_recorded_id"
+        relationship: many_to_one
+
+    dimensions:
+      - name: affordable_housing_id
+        sql: affordable_housing_id
+        type: number
+        primary_key: true
+        
+      - name: rate
+        sql: rate
+        type: number
+        
+      - name: census_units
+        sql: census_units
+        type: number
+        
+      - name: total_assisted_units
+        sql: total_assisted_units
+        type: number
+
+    measures:
+      - name: total_census_units
+        sql: census_units
+        type: sum
+        
+      # THE FIX: Renamed to "sum_total_assisted_units" to avoid the duplicate error
+      - name: sum_total_assisted_units
+        sql: total_assisted_units
+        type: sum
+        
+      - name: average_affordable_rate
+        sql: rate
+        type: avg

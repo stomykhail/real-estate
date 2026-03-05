@@ -1,0 +1,13 @@
+cubes:
+  - name: dim_property_type
+    sql_table: public.dim_property_type
+    
+    dimensions:
+      - name: property_type_id
+        sql: property_type_id
+        type: number
+        primary_key: true
+        
+      - name: type
+        sql: type
+        type: string
